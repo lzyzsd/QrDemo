@@ -9,4 +9,9 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="action_settings">Settings</string>
 
+    <string-array name="search_by_array">
+        <item>保管人</item>
+        <item>资产名称</item>
+    </string-array>
+
 </resources>
