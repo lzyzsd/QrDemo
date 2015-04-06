@@ -20,7 +20,7 @@ public class QrActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_qr);
 
 		mTextView = (TextView) findViewById(R.id.result);
 		mImageView = (ImageView) findViewById(R.id.qrcode_bitmap);
