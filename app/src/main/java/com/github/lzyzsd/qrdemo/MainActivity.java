@@ -1,9 +1,13 @@
 package com.github.lzyzsd.qrdemo;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -111,5 +115,20 @@ public class MainActivity extends ActionBarActivity {
         }
 
         ((MyAdapter) recyclerView.getAdapter()).setProducts(products);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_scan) {
+            startActivity(new Intent(this, QrActivity.class));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
