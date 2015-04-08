@@ -1,6 +1,6 @@
 package com.github.lzyzsd.qrdemo;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import retrofit.http.GET;
 import retrofit.http.Query;
@@ -11,8 +11,8 @@ import rx.Observable;
  */
 public interface MyService {
     @GET("/asset/indexbykeeper")
-    Observable<List<Product>> searchByKeeperName(@Query("keeper") String userName);
+    Observable<ArrayList<Product>> searchByKeeperName(@Query("keeper") String userName);
 
     @GET("/asset/indexbyname")
-    Observable<List<Product>> searchByProductName(@Query("name") String productName);
+    Observable<ArrayList<Product>> searchByProductName(@Query("name") String productName);
 }
