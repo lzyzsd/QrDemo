@@ -3,6 +3,7 @@ package com.github.lzyzsd.qrdemo;
 import android.text.TextUtils;
 
 import com.google.gson.TypeAdapter;
+import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
@@ -29,35 +30,33 @@ public class Product {
     public int number;
     public String manufacturer;
     public String remark;
-    public String classField;
+    public int classField;
     public int assetState;
     public int id;
     public DateTime createdAt;
     public DateTime updatedAt;
 
-    public Product() {}
+    public String getClassFieldString() {
+        switch (this.classField) {
+            case 0:
+                return "固定资产";
+            default:
+                return "耗材";
+        }
+    }
 
-    public Product(JSONObject jsonObject) {
-        try {
-            this.name = jsonObject.getString("name");
-            this.specificType = jsonObject.getString("specificType");
-            this.buyTime = new DateTime(jsonObject.getString("buyTime"));
-            this.buyPrice = jsonObject.getDouble("buyPrice");
-            this.depreciationPeriod = jsonObject.getInt("depreciationPeriod");
-            this.keeper = jsonObject.getString("keeper");
-            this.type = jsonObject.getString("type");
-            this.keepPlace = jsonObject.getString("keepPlace");
-            this.expireTime = jsonObject.isNull("expireTime") ? null : new DateTime(jsonObject.getString("expireTime"));
-            this.number = jsonObject.getInt("number");
-            this.manufacturer = jsonObject.getString("manufacturer");
-            this.remark = jsonObject.getString("remark");
-            this.classField = jsonObject.getString("classField");
-            this.assetState = jsonObject.getInt("assetState");
-            this.id = jsonObject.getInt("id");
-            this.createdAt = new DateTime(jsonObject.getString("createdAt"));
-            this.updatedAt = new DateTime(jsonObject.getString("updatedAt"));
-        } catch (JSONException e) {
-            e.printStackTrace();
+    public String getAssetStateString() {
+        switch (this.assetState) {
+            case 2:
+                return "借用";
+            case 3:
+                return "保修";
+            case 4:
+                return "报废";
+            case 5:
+                return "维修";
+            default:
+                return "库存";
         }
     }
 

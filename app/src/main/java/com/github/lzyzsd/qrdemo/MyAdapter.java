@@ -18,26 +18,34 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView nameText;
         TextView specificTypeText;
+        TextView buyTimeText;
         TextView buyPriceText;
         TextView deprecationPeriodText;
         TextView keeperText;
         TextView keepPlaceText;
+        TextView typeText;
         TextView numberText;
         TextView manufacturerText;
+        TextView remarkText;
+        TextView classFieldText;
         TextView assetStateText;
-        TextView createdAtText;
+        TextView expireTimeText;
         public ViewHolder(View v) {
             super(v);
             nameText = (TextView) v.findViewById(R.id.tv_name);
             specificTypeText = (TextView) v.findViewById(R.id.tv_specific_type);
+            buyTimeText = (TextView) v.findViewById(R.id.tv_buy_time);
             buyPriceText = (TextView) v.findViewById(R.id.tv_buy_price);
             deprecationPeriodText = (TextView) v.findViewById(R.id.tv_depreciation_period);
             keeperText = (TextView) v.findViewById(R.id.tv_keeper);
             keepPlaceText = (TextView) v.findViewById(R.id.tv_keep_place);
+            typeText = (TextView) v.findViewById(R.id.tv_type);
             numberText = (TextView) v.findViewById(R.id.tv_number);
             manufacturerText = (TextView) v.findViewById(R.id.tv_manufacturer);
+            remarkText = (TextView) v.findViewById(R.id.tv_remark);
+            classFieldText = (TextView) v.findViewById(R.id.tv_class_field);
             assetStateText = (TextView) v.findViewById(R.id.tv_asset_state);
-            createdAtText = (TextView) v.findViewById(R.id.tv_created_at);
+            expireTimeText = (TextView) v.findViewById(R.id.tv_expire_time);
         }
 
         public void bind(Product product) {
@@ -47,10 +55,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             deprecationPeriodText.setText(String.valueOf(product.depreciationPeriod));
             keeperText.setText(product.keeper);
             keepPlaceText.setText(product.keepPlace);
+            typeText.setText(product.type);
             numberText.setText(String.valueOf(product.number));
             manufacturerText.setText(product.manufacturer);
-            assetStateText.setText(String.valueOf(product.assetState));
-            createdAtText.setText(product.createdAt.toString("YYYY-MM-DD HH:mm:ss"));
+            remarkText.setText(product.remark);
+            classFieldText.setText(product.getClassFieldString());
+            assetStateText.setText(String.valueOf(product.getAssetStateString()));
+            if (product.expireTime != null) {
+                expireTimeText.setText(product.expireTime.toString("YYYY-MM-DD HH:mm:ss"));
+            }
         }
     }
 
