@@ -15,15 +15,21 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.squareup.okhttp.OkHttpClient;
 
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import retrofit.RestAdapter;
+import retrofit.client.OkClient;
+import retrofit.converter.GsonConverter;
+import rx.Subscriber;
+import rx.android.observables.AndroidObservable;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -35,10 +41,34 @@ public class MainActivity extends ActionBarActivity {
     RecyclerView.Adapter adapter;
     RecyclerView.LayoutManager layoutManager;
 
+    MyService myService;
+
+    private void initMyService() {
+        RestAdapter.Builder builder = new RestAdapter.Builder();
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(DateTime.class, new Product.DateTimeTypeAdapter())
+                .create();
+        OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.setConnectTimeout(60, TimeUnit.SECONDS);
+        okHttpClient.setReadTimeout(30, TimeUnit.SECONDS);
+        OkClient okClient = new OkClient(okHttpClient);
+
+        builder.setClient(okClient);
+        RestAdapter restAdapter = builder.setClient(new OkClient())
+                .setEndpoint("http://121.40.130.130:1337")
+                .setLogLevel(RestAdapter.LogLevel.HEADERS)
+                .setConverter(new GsonConverter(gson))
+                .build();
+
+        myService = restAdapter.create(MyService.class);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        initMyService();
 
         searchButton = (Button) findViewById(R.id.btn_search);
         nameText = (EditText) findViewById(R.id.et_name);
@@ -70,51 +100,43 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void searchByKeeperName(String name) {
-        MyService.searchByKeeperName(name, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                super.onSuccess(statusCode, headers, response);
-                onSearchSuccess(response);
-            }
+        AndroidObservable.bindActivity(this, myService.searchByKeeperName(name))
+                .subscribe(new Subscriber<List<Product>>() {
+                    @Override
+                    public void onCompleted() {
+                    }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                progressBar.setVisibility(View.GONE);
-            }
-        });
+                    @Override
+                    public void onError(Throwable e) {
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onNext(List<Product> products) {
+                        progressBar.setVisibility(View.GONE);
+                        ((MyAdapter) recyclerView.getAdapter()).setProducts(products);
+                    }
+                });
     }
 
     private void searchByProductName(String name) {
-        MyService.searchByProductName(name, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                super.onSuccess(statusCode, headers, response);
-                onSearchSuccess(response);
-            }
+        AndroidObservable.bindActivity(this, myService.searchByProductName(name))
+                .subscribe(new Subscriber<List<Product>>() {
+                    @Override
+                    public void onCompleted() {
+                    }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                progressBar.setVisibility(View.GONE);
-            }
-        });
-    }
+                    @Override
+                    public void onError(Throwable e) {
+                        progressBar.setVisibility(View.GONE);
+                    }
 
-    private void onSearchSuccess(JSONArray response) {
-        progressBar.setVisibility(View.GONE);
-        List<Product> products = new ArrayList<Product>();
-        for (int i = 0; i < response.length(); i++) {
-            try {
-                JSONObject jsonObject = response.getJSONObject(i);
-                Product product = new Product(jsonObject);
-                products.add(product);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        ((MyAdapter) recyclerView.getAdapter()).setProducts(products);
+                    @Override
+                    public void onNext(List<Product> products) {
+                        progressBar.setVisibility(View.GONE);
+                        ((MyAdapter) recyclerView.getAdapter()).setProducts(products);
+                    }
+                });
     }
 
     @Override
