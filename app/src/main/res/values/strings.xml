@@ -16,6 +16,7 @@
  -->
 <resources>
 
+  <string name="app_name">资产查询</string>
   <string name="hello_world">Hello world!</string>
   <string name="menu_scan">扫码</string>
 
@@ -28,8 +29,6 @@
     <item>资产名称</item>
   </string-array>
 
-
-  <string name="app_name">Barcode Scanner</string>
   <string name="app_picker_name">Applications</string>
   <string name="bookmark_picker_name">Bookmarks</string>
   <string name="button_add_calendar">Add to calendar</string>
