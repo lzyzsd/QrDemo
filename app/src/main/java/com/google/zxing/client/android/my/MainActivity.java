@@ -6,6 +6,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -203,10 +205,10 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Constants.REQUEST_CODE_CAPTURE_ACTIVITY) {
+        if (requestCode == Constants.REQUEST_CODE_CAPTURE_ACTIVITY && !TextUtils.isEmpty(ClipboardInterface.getText(this))) {
             String url = ClipboardInterface.getText(this).toString();
             Uri uri = Uri.parse(url);
-            if (!uri.getHost().equals(Constants.IP)) {
+            if (uri.getHost() == null || !uri.getHost().equals(Constants.IP)) {
                 return;
             }
             List<String> paths = uri.getPathSegments();
