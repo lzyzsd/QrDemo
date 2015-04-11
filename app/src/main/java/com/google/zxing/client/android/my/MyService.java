@@ -19,4 +19,7 @@ public interface MyService {
 
     @GET("/asset/{id}")
     Observable<Product> searchById(@Path("id") int id);
+
+    @GET("/asset")
+    Observable<ArrayList<Product>> searchByAssetState(@Query("assetState") int state);
 }

@@ -44,31 +44,11 @@ public class SearchTabFragment extends Fragment {
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
 
-    MyService myService;
+    MyService myService = ApiService.getMyService();
 
     Subscription searchByKeeperSubscription, searchByNameSubScription, searchByIdSubscription;
 
     public SearchTabFragment() {
-    }
-
-    private void initMyService() {
-        RestAdapter.Builder builder = new RestAdapter.Builder();
-        Gson gson = new GsonBuilder()
-            .registerTypeAdapter(DateTime.class, new Product.DateTimeTypeAdapter())
-            .create();
-        OkHttpClient okHttpClient = new OkHttpClient();
-        okHttpClient.setConnectTimeout(60, TimeUnit.SECONDS);
-        okHttpClient.setReadTimeout(30, TimeUnit.SECONDS);
-        OkClient okClient = new OkClient(okHttpClient);
-
-        builder.setClient(okClient);
-        RestAdapter restAdapter = builder.setClient(new OkClient())
-            .setEndpoint("http://" + Constants.IP + ":" + Constants.PORT)
-            .setLogLevel(RestAdapter.LogLevel.HEADERS)
-            .setConverter(new GsonConverter(gson))
-            .build();
-
-        myService = restAdapter.create(MyService.class);
     }
 
     @Override
@@ -80,7 +60,6 @@ public class SearchTabFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search_tab, container, false);
-        initMyService();
 
         searchButton = (Button) view.findViewById(R.id.btn_search);
         nameText = (EditText) view.findViewById(R.id.et_name);
@@ -92,7 +71,6 @@ public class SearchTabFragment extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         typeSpinner.setAdapter(adapter);
 
-        recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this.getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(new MyAdapter());
