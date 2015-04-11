@@ -7,4 +7,10 @@
         app:showAsAction="always"
         android:title="@string/menu_scan"/>
 
+    <item
+        android:id="@+id/menu_feedback"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="@string/menu_feedback"/>
+
 </menu>

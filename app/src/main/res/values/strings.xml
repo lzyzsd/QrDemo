@@ -19,6 +19,7 @@
   <string name="app_name">资产查询</string>
   <string name="hello_world">Hello world!</string>
   <string name="menu_scan">扫码</string>
+  <string name="menu_feedback">反馈</string>
 
   <string name="scan_text">将二维码放入框内, 即可自动扫描</string>
   <string name="title_activity_main">MainActivity</string>
