@@ -2,6 +2,7 @@ package com.google.zxing.client.android.my;
 
 import android.support.v4.app.Fragment;
 import android.content.Intent;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -57,24 +58,26 @@ public class MainActivity extends ActionBarActivity {
         addTabSelectListener();
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(STATE_SELECTED_TAB, selectedTab);
+    }
+
     private void selectTab(int index) {
         tabs[selectedTab].setSelected(false);
         tabs[index].setSelected(true);
+        FragmentTransaction transaction = getSupportFragmentManager()
+            .beginTransaction();
 
-        if (index == selectedTab) {
-            if (!tabFragments[index].isVisible()) {
-                getSupportFragmentManager()
-                    .beginTransaction()
-                    .show(tabFragments[index])
-                    .commit();
+        for (int i = 0; i < tabFragments.length; i++) {
+            if (i == index) {
+                transaction.show(tabFragments[i]);
+            } else {
+                transaction.hide(tabFragments[i]);
             }
-        } else {
-            getSupportFragmentManager()
-                .beginTransaction()
-                .show(tabFragments[index])
-                .hide(tabFragments[selectedTab])
-                .commit();
         }
+        transaction.commit();
         getSupportFragmentManager().executePendingTransactions();
 
         selectedTab = index;
