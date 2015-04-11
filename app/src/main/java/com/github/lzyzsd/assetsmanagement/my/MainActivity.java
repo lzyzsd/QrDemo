@@ -12,6 +12,8 @@ import android.widget.FrameLayout;
 
 import com.github.lzyzsd.assetsmanagement.CaptureActivity;
 import com.github.lzyzsd.assetsmanagement.R;
+import com.squareup.otto.Subscribe;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.fb.FeedbackAgent;
 
 public class MainActivity extends ActionBarActivity {
@@ -127,5 +129,17 @@ public class MainActivity extends ActionBarActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
     }
 }

@@ -19,6 +19,7 @@ import android.widget.Spinner;
 
 import com.github.lzyzsd.assetsmanagement.clipboard.ClipboardInterface;
 import com.github.lzyzsd.assetsmanagement.R;
+import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -162,6 +163,28 @@ public class SearchTabFragment extends Fragment {
             });
     }
 
+    private void updateAssetState(int id, int state) {
+        unsubscribe();
+        nameText.setText("");
+        AndroidObservable.bindFragment(this, myService.updateAssetState(id, state))
+            .subscribe(new Subscriber<Product>() {
+                @Override
+                public void onCompleted() {
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    progressBar.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onNext(Product product) {
+                    progressBar.setVisibility(View.GONE);
+                    ((MyAdapter) recyclerView.getAdapter()).update(product);
+                }
+            });
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -183,5 +206,22 @@ public class SearchTabFragment extends Fragment {
         if (menu.findItem(R.id.menu_scan) == null) {
             menu.add(0, R.id.menu_scan, 0, "扫码");
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        ApiService.bus.unregister(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ApiService.bus.register(this);
+    }
+
+    @Subscribe
+    public void onAssetStateUpdateEvent(UpdateAssetStateEvent updateAssetStateEvent) {
+        updateAssetState(updateAssetStateEvent.id, updateAssetStateEvent.state);
     }
 }

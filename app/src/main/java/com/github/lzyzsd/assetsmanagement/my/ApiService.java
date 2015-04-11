@@ -3,6 +3,7 @@ package com.github.lzyzsd.assetsmanagement.my;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.OkHttpClient;
+import com.squareup.otto.Bus;
 
 import org.joda.time.DateTime;
 
@@ -17,6 +18,7 @@ import retrofit.converter.GsonConverter;
  */
 public class ApiService {
     static MyService myService;
+    public static Bus bus = new Bus();
 
     private static void initMyService() {
         RestAdapter.Builder builder = new RestAdapter.Builder();

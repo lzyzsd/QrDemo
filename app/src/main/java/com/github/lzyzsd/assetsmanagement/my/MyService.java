@@ -1,8 +1,13 @@
 package com.github.lzyzsd.assetsmanagement.my;
 
+import com.squareup.okhttp.Response;
+
 import java.util.ArrayList;
 
+import retrofit.http.Field;
+import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
+import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
 import rx.Observable;
@@ -22,4 +27,8 @@ public interface MyService {
 
     @GET("/asset")
     Observable<ArrayList<Product>> searchByAssetState(@Query("assetState") int state);
+
+    @POST("/asset/{id}")
+    @FormUrlEncoded
+    Observable<Product> updateAssetState(@Path("id")int id, @Field("assetState") int state);
 }

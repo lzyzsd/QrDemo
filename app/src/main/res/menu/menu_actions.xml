@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/mark_as_obsolete"
+          android:title="报废"/>
+    <item android:id="@+id/mark_as_fix"
+        android:title="保修"/>
+</menu>
