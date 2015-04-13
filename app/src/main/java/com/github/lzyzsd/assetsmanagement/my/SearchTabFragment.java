@@ -47,6 +47,7 @@ public class SearchTabFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        ApiService.bus.register(this);
     }
 
     @Override
@@ -186,21 +187,6 @@ public class SearchTabFragment extends Fragment {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Constants.REQUEST_CODE_CAPTURE_ACTIVITY && !TextUtils.isEmpty(ClipboardInterface.getText(this.getActivity()))) {
-            String url = ClipboardInterface.getText(this.getActivity()).toString();
-            Uri uri = Uri.parse(url);
-            if (uri.getHost() == null || !uri.getHost().equals(Constants.IP)) {
-                return;
-            }
-            List<String> paths = uri.getPathSegments();
-            int id = Integer.parseInt(paths.get(paths.size() - 1));
-            searchById(id);
-        }
-    }
-
-    @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         if (menu.findItem(R.id.menu_scan) == null) {
@@ -209,19 +195,18 @@ public class SearchTabFragment extends Fragment {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        ApiService.bus.unregister(this);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
+    public void onDestroy() {
+        super.onDestroy();
         ApiService.bus.register(this);
     }
 
     @Subscribe
     public void onAssetStateUpdateEvent(UpdateAssetStateEvent updateAssetStateEvent) {
         updateAssetState(updateAssetStateEvent.id, updateAssetStateEvent.state);
+    }
+
+    @Subscribe
+    public void onScanResultEvent(ScanResultEvent scanResultEvent) {
+        searchById(scanResultEvent.id);
     }
 }

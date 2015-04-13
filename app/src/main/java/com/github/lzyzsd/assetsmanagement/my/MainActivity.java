@@ -1,10 +1,12 @@
 package com.github.lzyzsd.assetsmanagement.my;
 
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,9 +14,12 @@ import android.widget.FrameLayout;
 
 import com.github.lzyzsd.assetsmanagement.CaptureActivity;
 import com.github.lzyzsd.assetsmanagement.R;
+import com.github.lzyzsd.assetsmanagement.clipboard.ClipboardInterface;
 import com.squareup.otto.Subscribe;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.fb.FeedbackAgent;
+
+import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
     FrameLayout container;
@@ -141,5 +146,21 @@ public class MainActivity extends ActionBarActivity {
     protected void onResume() {
         super.onResume();
         MobclickAgent.onResume(this);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        System.out.println("----------------onActivityResult: " + requestCode);
+        if (requestCode == Constants.REQUEST_CODE_CAPTURE_ACTIVITY && !TextUtils.isEmpty(ClipboardInterface.getText(this))) {
+            String url = ClipboardInterface.getText(this).toString();
+            Uri uri = Uri.parse(url);
+            if (uri.getHost() == null || !uri.getHost().equals(Constants.IP)) {
+                return;
+            }
+            List<String> paths = uri.getPathSegments();
+            int id = Integer.parseInt(paths.get(paths.size() - 1));
+            ApiService.bus.post(new ScanResultEvent(id));
+        }
     }
 }
